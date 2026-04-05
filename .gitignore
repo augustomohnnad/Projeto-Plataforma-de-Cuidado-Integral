@@ -1,13 +1,10 @@
 **Pasta de Sistema
 node_modules
-Front-End
+
 
 **Aquivos em desenvolvimento
-controllerAgenda.js
-model_agenda.js
 model_historico.js
-rotas_agenda.js
-modules_agenda.js
+
 
 **Banco de dados
 cuidadointegral.db

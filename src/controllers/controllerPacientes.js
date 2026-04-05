@@ -1,5 +1,3 @@
-const { json } = require("express");
-
 class Paciente {
     constructor(pacienteModel) {
         this.pacienteModel = pacienteModel
