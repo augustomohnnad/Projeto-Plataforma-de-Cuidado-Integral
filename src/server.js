@@ -11,7 +11,7 @@ async function start() {
     await modulesPaciente(app)
     await modulesAgenda(app)
 
-    const PORT = 3001;
+    const PORT = 3000;
     app.listen(PORT, () => {
         console.log(`Servidor rodando: http://127.0.0.1:${PORT}`)
     })

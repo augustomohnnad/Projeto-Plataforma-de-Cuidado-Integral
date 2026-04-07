@@ -17,7 +17,7 @@ class Paciente {
             }
 
         } catch (e) {
-            if(e.message.includes("CPF")) {
+            if(e.message.includes("UNIQUE constraint failed: tb_pacientes.cpf")) {
                 console.error(`[ERRO NO CADASTRO]: ${e.message}`)
                 return res.status(400).json({
                     erro: true, 

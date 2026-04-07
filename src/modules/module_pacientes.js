@@ -5,10 +5,10 @@ const routerPacientes = require("../router/rotas_pacientes")
 
 const modulesPaciente = async (app) => {
     const db = await openDb()
-    const model = new modelPaciente(db)
-    await model.tabelaPacientes()
+    const pacienteModel = new modelPaciente(db)
+    await pacienteModel.tabelaPacientes()
 
-    const controller = new controllerPacientes(model)
+    const controller = new controllerPacientes(pacienteModel)
     app.use("/api/pacientes", routerPacientes(controller))
 }
 

@@ -7,7 +7,8 @@ openDb = async () => {
     filename: "./src/database/cuidadoIntegral.db",
     driver: sqlite3.Database
     })
-    
+    // o codigo da linha 11 faz com que o sqlite ative minhas FOREIGN KEY
+    await db.exec("PRAGMA foreign_keys = ON;");
     return db
     
   } catch (error) {
