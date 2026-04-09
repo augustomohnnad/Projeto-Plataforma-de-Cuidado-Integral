@@ -258,7 +258,7 @@ async function start() {
 start()
 ```
 
-Com a injeções de depedencia(**Pasta Modules**) emvolve abertura de banco de dados , o uso do async/await no start() garante que o servidor so abra para o publico(**app.listen**) apos a conexão do banco de dados  estabelecida com sucesso.
+Com a injeções de depedencia(**Pasta Modules**) envolve abertura de banco de dados , o uso do async/await no start() garante que o servidor so abra para o publico(**app.listen**) apos a conexão do banco de dados  estabelecida com sucesso.
 
 Isso também faz com que o sistema não receba nenhuma requisição sem antes o banco e as tabelas estejam prontas.
 
@@ -278,7 +278,7 @@ Exemplo: ```src/controller/controllerPacientes.js```
 ```javascript
 // classe com seus metodos
 class Paciente {
-    //contructor recebendo a variavel constructora que retornara p corpo da requisição para o metodo metodo selecionado do Model_paciente
+    //contructor recebe a variavel constructora que retornara para o corpo da requisição o metodo selecionado do Model_paciente
     constructor(pacienteModel) {
         this.pacienteModel = pacienteModel
     }
@@ -299,10 +299,10 @@ class Paciente {
             //Envia a resposta http com seu devido status
             res.status(201).send(`${nome_paciente}, cadastrado com sucesso`)
         }
-      // se passou pelo Try o catch atuara como um else armazenando o erro no calback (e)
+      // se passou pelo Try, o catch atuara como um else armazenando o erro no calback (e)
       } catch (e) {
           //Verifica o que o throw mandou no retorno da mensagem no caso aqui ele verifica se a mensagem é relacionada a banco de dados
-          if(e.message.includes("UNIQUE constraint failed: tb_pacientes.cpf")) {   // Apresenta no console o erro
+          if(e.message.includes("UNIQUE constraint failed: tb_pacientes.cpf")) {   // Apresenta no console
               console.error(`[ERRO NO CADASTRO]: ${e.message}`)
               // Retorna a resposta http com seu devido status
               return res.status(400).json({
@@ -310,7 +310,7 @@ class Paciente {
                   mensagem: e.message
               })
           } 
-          //Caso não seja nenhum dos erros acima ele retorna um erro generico restrito ao desenvolvedor e para o cliente apenas dis que houve um problema
+          //Caso não seja nenhum dos erros acima ele retorna um erro generico restrito ao desenvolvedor e para o cliente apenas diz que houve um problema
           console.error(`[ERRO NO SERVIDOR]: ${e.message}`)
           return res.status(500).json({
               erro: true, 
@@ -366,7 +366,7 @@ module.exports = (controller) => {
 }
 ```
 
-## 🔗 Endpoints da API (Interface de Comunicação)
+## 🔗 Endpoints da API (rotas_pacientes.js)
 Esta seção descreve como interagir com a PCI. Cada endpoint espera um formato específico de dados e retorna um código de status HTTP que indica o sucesso ou falha da operação.
 
 ```javascript
@@ -374,7 +374,7 @@ router.post("/", (req, res) => controller.cadastroPaciente(req, res))
 ```
 * **POST Cadastrar-Pacientes:** ```[POST](http://127.0.0.1:3000/api/pacientes)```
 
-A rota espera a o envio do objeto no corpo da requisição:
+A rota espera  o envio do objeto no corpo da requisição:
 
 ```json
 {
@@ -388,7 +388,7 @@ A rota espera a o envio do objeto no corpo da requisição:
 
 ```
 
-o controller verifica no seu metodo cadastroPaciente:
+o controller verifica no seu metodo cadastroPaciente os dados recebidos:
 ```javascript
 class Paciente {
     constructor(pacienteModel) {
@@ -444,7 +444,7 @@ insertPaciente = async (nome_paciente, cpf, endereco, cep, contato_responsavel, 
         return await this.db.run(sql, [nome_paciente, cpf, endereco, cep, contato_responsavel, observacao])
     }
 ```
-Controller diz para  a rota retornar o ```Status(201)``` Elias de Souza, Paciente cadastrado com sucesso
+O model faz o insert no banco de daos e o Controller diz para  a rota retornar o ```Status(201)``` Elias de Souza, Paciente cadastrado com sucesso
 
 ---
 
@@ -481,14 +481,14 @@ listarPacientes = async (req, res) => {
     }   
 ```
 
-o model verifica e retorna para o controller:
+o model_paciente retorna para o controlher um array de objetos para o controller:
 ```JavaScript
  selectPacientes = async () => {
         return await this.db.all(`SELECT *FROM tb_pacientes`)
     }
 
 ```
-O controller retorna para a rota retornar **Status(200)** OK com a lista de objetos com os dados
+O controller envia o arquivo JSON como respesta ao pedido e a rota retornar **Status(200)** OK com a lista de objetos com os dados
 
 ```json
 {
@@ -519,7 +519,7 @@ router.get("/:id", (req, res) => controller.getIdPaciente(req, res))
 ```
 * **GET Cadastrar-Pacientes:** ```[POST](http://127.0.0.1:3000/api/pacientes/1)```
 
-A rota espera a o envio do (id) no corpo da requisição, o controller verifica:
+O controoler espera o envio do (id) no corpo da requisição da rota:
 
 ```javascript
 getIdPaciente = async (req, res) => {
@@ -554,7 +554,7 @@ getIdPaciente = async (req, res) => {
         
     } 
 ```
-O model verifica e retorna para o controller:
+O model_paciente verifica se existe algo dentro do banco e retorna para o controller:
 ```javaScript
 selectIdPaciente = async (id) => {
         return await this.db.all(`SELECT *FROM tb_pacientes
@@ -563,7 +563,7 @@ selectIdPaciente = async (id) => {
     }
 ```
 
-O controller retorna para a rota retornar **Status(200)** OK com apenas o array de objeto com os dados:
+O controller enviara para a rota **Status(200)** OK o ID solicitado com o  array de objeto:
 
 ```json
 {
@@ -584,7 +584,7 @@ router.put("/:id", (req, res) => controller.editarPaciente(req, res))
 ```
 * **PUT Atualizar-Pacientes:** ```[POST](http://127.0.0.1:3000/api/pacientes/1)```
 
-A rota espera o envio do (id) no corpo da requisição, com os objetos especifico apos isso o controller verifica no metodo updatePaciente:
+A rota espera o envio do (id) no corpo da requisição, com os objetos especifico apos isso o controller verifica se as informaçoes estão corretas para enviar ao model_paciente:
 
 ```json
 {
@@ -632,7 +632,7 @@ editarPaciente = async (req, res) => {
         
     } 
 ```
-O model pega os dados, verifica, lança no banco de dados e retorna para o controller:
+O model pega os dados faz o update no banco de dados e retorna para o controller:
 ```javaScript
 updatePaciente = async (nome_paciente, cpf, endereco, cep, contato_responsavel, observacao, id) => {
         const sql = (`
@@ -649,14 +649,15 @@ updatePaciente = async (nome_paciente, cpf, endereco, cep, contato_responsavel, 
     }
 ```
 
-O controller retorna para a rota retornar **Status(201)** Dados Paciente Elias de souza, atualizado com sucesso! atualiza:
+O controller envias a resposta para a rota  **Status(201)** Dados Paciente Elias de souza, atualizado com sucesso! atualiza:
 
 ```javascript
 router.delete("/:id", (req, res) => controller.deletPaciente(req, res))
 ```
 * **DELETE Deletar-Pacientes:** ```[POST](http://127.0.0.1:3000/api/pacientes/1)```
 
-A rota espera a o envio do (id) no corpo da requisição, o controller verifica:
+A rota espera a o envio do (id) no corpo da requisição, o controller envia para o model_paciente:
+Observação: o controller pede para o model verificar se o ID requisitado esta no banco de dados.
 
 ```javascript
 deletPaciente = async (req, res) => {
@@ -689,7 +690,7 @@ deletPaciente = async (req, res) => {
 
     }
 ```
-O model verifica e retorna para o controller:
+O model_paciente apos verificado o se existe o ID, em seguida faz o Delete:
 ```javaScript
    deletePaciente = async (id) => {
         return await this.db.run(`
@@ -700,16 +701,443 @@ O model verifica e retorna para o controller:
     }
 ```
 
-O controller retorna para a rota retornar **Status(200)** OK apagando o paciente (id) 1 do banco de dados
+O controller envia para a rota **Status(200)** OK, apagando o paciente (id) 1 do banco de dados
+
+---
+## 🔗 Endpoints da API (rotas_agenda.js)
+
+```javascript
+//Importação do express
+const express = require("express")
+
+// O roteador exporta uma função que recebe o controller por injeção.
+// Isso garante o desacoplamento: a rota não precisa saber como o controller foi criado.
+module.exports = (controller) => {
+    // Instancia o roteador do Express para gerenciar endpoints específicos
+    const router = express.Router()
+    // Rota de acesso POST para Lançar paciente
+    router.post("/", (req, res) => (controller.lançarAgendamento(req, res)))
+    // Rota de acesso GET para para listar todos os agendamentos
+    router.get("/", (req,res) => (controller.listaAgendamento(req, res)))
+    //Rota de acesso GET  para listar agendamento por ID(Indentificado unico)
+    router.get("/:paciente_vinculado", (req,res) => (controller.getAgendamentoPorPaciente(req, res)))
+    //Rota de acesso PUT para para Atualiza um agendamnento por ID(Indentificado unico)
+    router.put("/:id", (req, res) => (controller.editarAgendamento(req, res)))
+    //Rota de acesso Delete para deletar um agendamnento por ID(Indentificado unico)
+    rrouter.delete("/:id", (req, res) => (controller.apagarAgendamento(req,res)))
+
+    return router
+}
+```
 
 
-**Em breve explicação da tabela agenda**
+
+```javascript
+router.post("/", (req, res) => (controller.lançarAgendamento(req, res)))
+```
+* **POST Lançar-Agenda:** ```[POST](http://127.0.0.1:3000/api/agendamento)```
+
+A rota espera  o envio do objeto no corpo da requisição:
 
 
+```json
+{
+    "paciente_vinculado": 1, //A coluna recebe o ID(tb_pacientes)
+    "descricao_atendimento": "Paciente precisa de cuidados extras", 
+    "dia_atendimento": "12-06-2026", 
+    "hora_atendimento": "15:00"
+}
+
+```
+
+**❗Importante**: A magica da **FOREING KEY** acontece na coluna **paciente_vinculado**
+
+| tabela     | coluna(1)  | coluna(2)                     |
+| :--------  | ---------  | -----------                   |
+|tb_pacientes|     id(1)  | nome_paciente(Elias de Souza) |
+
+o controller verifica no seu metodo lançarAgendamento os dados recebidos:
+```javascript
+class Agenda {
+    constructor(modelAgenda) {
+        this.modelAgenda = modelAgenda;
+    }
+
+    lançarAgendamento = async (req, res) => {
+        try {
+            const {paciente_vinculado, descricao_atendimento, dia_atendimento, hora_atendimento} = req.body
+            
+            await this.modelAgenda.insertAgenda(paciente_vinculado, descricao_atendimento, dia_atendimento, hora_atendimento)
+            return res.status(201).json(`Paciente ${paciente_vinculado}, agendado com sucesso`)
+        // Captura no corpo da Menssagem se o erro é relaciona a "FOREIGN KEY"
+        } catch (e) {
+            if(e.message.includes("FOREIGN KEY")) {
+                console.error(`[ATENÇÃO]: ${e.message}`)
+                return res.status(400).json({
+                    error: true,
+                    menssagem: "Erro: O paciente informado não está cadastrado no sistema."
+                })
+            }
+            console.error(`[ERRO NO SERVIDOR]: ${e.message}`)
+            return res.status(500).json({
+                error: true,
+                mensagem: e.message
+            })
+        } 
+        
+    }
+```
+**❗Importante**: Aqui eu deixei a verificação se o Paciente esta cadastrado direto com o SQLITE ou seja, o SQL que vai me falar se o paciente existe ou não
+
+Se tudo der certo a Variavel contrutora enviara os dados o model_agenda.js:
+
+```Javascript
+insertAgenda = async (paciente_vinculado, descricao_atendimento, dia_atendimento, hora_atendimento) => {
+        const sql = (`
+            INSERT INTO tb_agenda(
+            paciente_vinculado, 
+            descricao_atendimento, 
+            dia_atendimento, 
+            hora_atendimento) VALUES (?, ?, ?, ?)
+        `)
+
+        return await this.db.run(sql, [paciente_vinculado, descricao_atendimento, dia_atendimento, hora_atendimento])
+    }
+
+```
+O model faz o insert no banco de dados e o Controller diz para  a rota retornar o ```Status(201)``` Elias de Souza, Paciente agendado com sucesso
+
+---
 
 
+```javascript
+router.get("/", (req,res) => (controller.listaAgendamento(req, res)))
+```
+* **POST Listar-Agendamento:** ```[GET](http://127.0.0.1:3000/api/agendamento)```
+
+A rota retornara todos os Agendamento que existem na tb_agenda:
+
+O controller verifica  requisição
+
+```Javascript
+    listaAgendamento = async (req, res) => {
+        try {
+            const listaAgendamento = await this.modelAgenda.selectAgendamento()
+            if(!listaAgendamento) {
+                throw new Error("Nenhum agendamento encontrado")
+            }
+
+            return res.status(200).json(listaAgendamento)
+        
+        }catch (e) {
+            console.error(`[ERRO AO PESQUISAR] ${e.message}`)
+            return res.status(404).json({
+                error: true,
+                mensagem: e.message
+            })
+
+        }
+        
+        
+    }
+```
+
+o model_agenda retorna para o controlher um array de objetos para o controller:
+```JavaScript
+     selectAgendamento = async () => {
+        const sql = (`
+            SELECT
+                tb_agenda.id, 
+                tb_pacientes.nome_paciente,
+                tb_pacientes.observacao,
+                tb_agenda.descricao_atendimento,
+                tb_agenda.dia_atendimento,
+                tb_agenda.hora_atendimento,
+                tb_agenda.resultado_atendimento,
+                tb_agenda.status_agendamento
+            FROM
+                tb_agenda
+            JOIN tb_pacientes 
+            ON tb_agenda.paciente_vinculado = tb_pacientes.id
+        `)
+        return await this.db.all(sql)
+
+    }
+
+```
+**❗Importante**: no ```SELECT tb_agenda.id, tb_pacientes.nome_paciente, ...:```
+
+Estas linhas definem o Schema de saída da sua consulta. Note que usamos o prefixo **tabela.coluna**. com isso digo ao **Select** que quero da **tb_agenda** somente o **id** e a **tb_pacientesme** traga o **nome_paciente** dessa forma eu digo ao **JOIN** que não precisa percorrer todas as coluna para me entregar o resultado, assim ele percorre apenas a coluna selecionada
 
 
+Percebemos aqui ```JOIN tb_pacientes``` que usamos o uma palavra chave **JOIN ou INNER JOIN**  isso indica que queremos combinar registros da tb_agenda com tb_pacientes 
 
+o **ON** é uma clausa de junção, estamos instruindo o banco a conectar as linhas onde a **Chave Estrangeira (Foreign Key)** que é o meu paciente_vinculado(tb_agenda) for exatamente igual a **Chave Primária(Primary Key)** que é o ID(tb_pacientes) ```ON tb_agenda.paciente_vinculado = tb_pacientes.id```
 
+O controller envia o arquivo JSON como respesta ao pedido e a rota retornar **Status(200)** OK com a lista de objetos com os dados
 
+```json
+{
+    
+    "id": 1,
+    "nome_paciente": "Elias de Souza",
+    "observacao": "Paciente toma remedios para preção de 3h em 3h",
+    "descricao_atendimento": "Paciente precisa de cuidados extras",
+    "dia_atendimento": "12-06-2026",
+    "hora_atendimento": "15:00",
+    "resultado_atendimento": "NULL",
+    "status_agendamento": "AGENDADO"
+},
+
+{
+    "id": 2,
+    "nome_paciente": "Amanda Santos", 
+    "observacao": "Paciente com dificuldade para andar",
+    "descricao_atendimento": "Higienizar a paciente", 
+    "dia_atendimento": "12-06-2026",
+    "hora_atendimento": "17:00",
+    "resultado_atendimento": "NULL",
+    "status_agendamento": "AGENDADO" 
+    
+}
+
+````
+---
+
+```javascript
+router.get("/:paciente_vinculado", (req,res) => (controller.getAgendamentoPorPaciente(req, res)))
+```
+* **GET Agendamento-Pacientes(paciente_vinculado):** ```[POST](http://127.0.0.1:3000/api/agendamento/2)```
+
+O controoler espera o envio do (id) no corpo da requisição da rota:
+
+```javascript
+getAgendamentoPorPaciente = async (req, res) => {
+        try {
+            const { paciente_vinculado } = req.params
+            const buscarPaciente = await this.modelAgenda.selectAgendamentoPorPaciente(Number(paciente_vinculado))
+
+            if(!buscarPaciente || buscarPaciente.length === 0) {
+                throw new Error("Não existe agendamento para o paciente informado")
+            }
+
+            return res.status(200).json(buscarPaciente)
+
+        } catch (e) {
+            console.error(`[ERRO AO PESQUISAR] ${e.message}`)
+            return res.status(404).json({
+                error: true,
+                mensagem: e.message
+            })
+        }   
+        
+    }
+```
+
+O model_agenda verifica se existe algo dentro do banco e retorna para o controller:
+```javaScript
+selectAgendamentoPorPaciente = async (paciente_vinculado) => {
+        const sql = (`
+            SELECT
+                tb_agenda.id,
+                tb_pacientes.nome_paciente,
+                tb_pacientes.observacao,
+                tb_agenda.descricao_atendimento,
+                tb_agenda.dia_atendimento,
+                tb_agenda.hora_atendimento,
+                tb_agenda.resultado_atendimento,
+                tb_agenda.status_agendamento
+            FROM
+                tb_agenda
+            JOIN tb_pacientes
+            ON tb_agenda.paciente_vinculado = tb_pacientes.id
+            WHERE tb_agenda.paciente_vinculado = ?    
+        `)
+```
+❗Importante: Tivemos o acrécimo da palavra chave **WHERE** na qual não retormos o ID mas sim o paciente vinculado.
+
+O controller enviara para a rota **Status(200)** OK o ID solicitado com o  array de objeto:
+
+```json
+{
+    "id": 2,
+    "nome_paciente": "Amanda Santos", 
+    "observacao": "Paciente com dificuldade para andar",
+    "descricao_atendimento": "Higienizar a paciente", 
+    "dia_atendimento": "12-06-2026",
+    "hora_atendimento": "17:00",
+    "resultado_atendimento": "Paciente foi higenizada",
+    "status_agendamento": "CONCLUIDO" 
+    
+}
+```
+
+---
+
+```javascript
+router.put("/:id", (req, res) => (controller.editarAgendamento(req, res)))
+```
+* **PUT Atualizar-Agendamento:** ```[POST](http://127.0.0.1:3000/api/Agendamento/2)```
+
+A rota espera o envio do (id) no corpo da requisição, com os objetos especifico apos isso o controller verifica se as informaçoes estão corretas para enviar ao model_paciente:
+
+```json
+{
+    "id": 2,
+    "nome_paciente": "Amanda Santos", 
+    "observacao": "Paciente com dificuldade para andar",
+    "descricao_atendimento": "Higienizar a paciente", 
+    "dia_atendimento": "12-06-2026",
+    "hora_atendimento": "17:00",
+    "resultado_atendimento": "Paciente foi higenizada", //Atualização
+    "status_agendamento": "CONCLUIDO" //Atualização
+    
+}
+```
+
+```javascript
+editarAgendamento = async (req, res) => {
+        try {
+            const { id } = req.params
+            const {paciente_vinculado, descricao_atendimento, dia_atendimento, hora_atendimento, resultado_atendimento, status_agendamento} = req.body
+
+            await this.modelAgenda.updateAgenda(paciente_vinculado, descricao_atendimento, dia_atendimento, hora_atendimento, resultado_atendimento, status_agendamento, id)
+
+            return res.status(200).json(`dados Paciente ${id}, atualizado com sucesso!`)
+
+        } catch (e) {
+            console.error(`[ERRO NO SERVIDOR]: ${e.message}`)
+            return res.status(500).json({
+                erro: true, 
+                mensagem: e.message
+            })
+            
+        }
+       
+        
+    }
+
+```
+O model pega os dados faz o update no banco de dados e retorna para o controller:
+```javaScript
+updateAgenda = async (paciente_vinculado, descricao_atendimento, dia_atendimento, hora_atendimento, resultado_atendimento, status_agendamento, id) => {
+        const sql = (`
+            UPDATE tb_agenda
+            SET paciente_vinculado = ?, 
+            descricao_atendimento = ?, 
+            dia_atendimento = ?, 
+            hora_atendimento = ?,
+            resultado_atendimento = ?, 
+            status_agendamento = ?
+            WHERE id = ?
+        `)
+        return await this.db.run(sql, [paciente_vinculado, descricao_atendimento, dia_atendimento, hora_atendimento, resultado_atendimento, status_agendamento, id])
+    }
+
+```
+
+O controller envias a resposta para a rota  **Status(201)** Dados id(2), atualizado com sucesso!
+
+```javascript
+router.delete("/:id", (req, res) => (controller.apagarAgendamento(req,res)))
+```
+* **DELETE Deletar-Agendamento:** ```[POST](http://127.0.0.1:3000/api/agendamento/1)```
+
+A rota espera a o envio do (id) no corpo da requisição, o controller envia para o model_paciente:
+Observação: o controller pede para o model verificar se o ID requisitado esta no banco de dados.
+
+```javascript
+apagarAgendamento = async (req, res) => {
+        try {
+            const { id } = req.params
+
+            const result = await this.modelAgenda.deleteAgendamento(Number(id))
+            //Verificação da resposta do banco de dados
+            if (result.changes === 0) {
+                return res.status(404).json({
+                    error: true,
+                    mensagem: "Agendamento não encontrado"
+                })
+            }
+
+            return res.status(200).json({
+                error: false,
+                mensagem: "Agendamento deletado com sucesso"
+            })
+
+        } catch (e) {
+            console.error(e)
+            return res.status(500).json({
+                error: true,
+                mensagem: e.message
+            })
+        }
+    }
+
+}
+```
+❗Importante: Aqui a verificação não é um **Select** antes mas sim  no banco de dados alguma linha foi afetada apos rodar a query se não acontecer isso significa que o o ID que caiu no Where não tem no banco de dados
+
+O model_paciente apos verificado o se existe o ID, em seguida faz o Delete:
+```javaScript
+    deleteAgendamento = async (id) => {
+        const sql = (`
+            DELETE FROM tb_agenda 
+            WHERE id = ?
+        `)
+        
+        return await this.db.run(sql, [id])
+    }
+```
+
+O controller envia para a rota **Status(200)** OK, Agendamento deletado com sucesso
+
+---
+
+##  🔐 A API utiliza ? nas queries SQL:
+
+```WHERE id = ?```
+
+Isso evita SQL maliciosos famoso(SQL Injection)
+
+## 📚Conceitos
+
+* CRUD (Create, Read, Uldate e Delete)
+* Rotas com Express 
+* Injeção de Dependência (variavel contrutura => db => model => controller )
+* Camada de Módulos: (modules_paciente.js e modules_agenda.js)
+* Integridade Referencial: (Foreign Keys)
+* Projeção de Dados: (SQL Joins)
+* Validação Proativa: (if/else)
+* Tratamento de Exceções Global: (try/catch/throw)
+* Status Codes HTTP Semânticos: (200, 201, 400, 404 e 500)
+
+## 🧠 Conclusão e Racionalização do Sistema
+
+O desenvolvimento da PCI não foi apenas um exercício de codificação, mas a criação de uma solução para um problema real de gestão de cuidados. A transição do registro manual (cadernos e mensagens) para um sistema automatizado seguiu os seguintes critérios técnicos:
+
+1. Centralização e Visão 360º (O Problema do Histórico)
+A cuidadora sofria com informações dispersas. A implementação do SELECT com JOIN entre tb_agenda e tb_pacientes resolve exatamente isso:
+
+Antes: Consultar cadernos e mensagens para reconstruir o histórico.
+
+Agora: Com uma única consulta ao endpoint de listagem, o sistema consolida dados de saúde, observações e evolução do atendimento em segundos.
+
+2. Redução da Carga Cognitiva via Modelagem Relacional
+A sensação de "esforço maior que o necessário" ocorre quando o cérebro precisa gerenciar dados repetitivos.
+
+Solução Técnica: Utilizamos a Normalização de Dados. Ao separar o "Paciente" do "Agendamento", a cuidadora cadastra os dados sensíveis (CPF, endereço, patologias) uma única vez. O sistema, através das Foreign Keys, cuida de manter tudo conectado. Isso permite que ela foque no cuidado, não no preenchimento de formulários.
+
+3. Confiabilidade e "Single Source of Truth" (Fonte Única da Verdade)
+Para atender às solicitações dos familiares com precisão:
+
+Integridade Referencial: O uso de bancos de dados relacionais impede que informações sejam perdidas ou fiquem "órfãs". Se um paciente é deletado ou editado, o sistema garante que o histórico de agendamentos reflita essa mudança, permitindo relatórios claros e rápidos para a família.
+
+4. Arquitetura para Freelancers (Escalabilidade)
+Pensando na cuidadora como uma profissional autônoma que deseja crescer:
+
+O uso de Node.js com SQLite foi uma decisão de engenharia para garantir Portabilidade. O sistema é leve o suficiente para rodar em dispositivos simples, mas estruturado em MVC para que, caso ela precise contratar mais ajudantes no futuro, o software suporte novos módulos (como controle financeiro ou acesso para familiares) sem precisar ser reescrito do zero.
+
+## 👩‍💻Projeto Educacional
+
+Este projeto foi desenvolvido para fins de aprendizado em back-end com Node.js
