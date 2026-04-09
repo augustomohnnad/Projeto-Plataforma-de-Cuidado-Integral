@@ -94,7 +94,7 @@ A tabela de pacientes utiliza restrições de unicidade para evitar duplicidade 
 | cep              | Codigo Postal             |
 | nome_solicitante | Quem registrou            |
 |contato_resp      | contacto                  |
-| Observação       | Algo incomun com Paciente |
+| Observacao       | Algo incomun com Paciente |
 | status_paciente  | Status (Padrão: Ativo)    |
 
 ---
@@ -131,7 +131,7 @@ A tabela Agenda, essa é uma tabela que possui um toque especial que é a **FORE
 | Campo               | Descrição                 |
 | ----------------    | ------------------------- |
 | id                  | Idenficador único         |
-|paciente_vinculado   | FK ta_paciente(id)        |
+|paciente_vinculado   | FK tb_paciente(id)        |
 | cpf                 | Documento do paciente     |
 | dia_atendimento     | dia para o atendimento    |
 | hora_atendimento    | Horario para o atendimento|
@@ -167,7 +167,7 @@ class modelAgenda {
         
     }
 ```
-Como visto acima temos uma **FOREIGN KEY (paciente_vinculado) REFERENCES tb_pacientes(id)**, isso faz com que eu crie um relacimento da tabela Agenda com a tabela Paciente, nessa linha de codigo eu digo, pegue minha coluna **paciente_vinculado** ela ira receber da minha tabela Paciente o seus dados da coluna **ID**.
+Como visto acima temos uma **FOREIGN KEY (paciente_vinculado) REFERENCES tb_pacientes(id)**, isso faz com que crie um relacimento da tabela Agenda com a tabela Pacientes, nessa linha de codigo eu digo, pegue minha coluna **paciente_vinculado** ela vai receber da minha tabela Paciente o seus dados da coluna **ID**.
 
 ---
 
@@ -217,7 +217,7 @@ const modulesPaciente = async (app) => {
 module.exports = modulesPaciente
 ```
 
-o Objetivo desse **Modules_paciente** é centralizar a injecção de de depedencia, deixando o server.js mais limpo r organizado, isso foi pensado pois estava me confundindo na hora de de organizar todos os arquivos.
+o Objetivo desse **Modules_paciente** é centralizar a injecção de de depedencia, deixando o server.js mais limpo e organizado, isso foi pensado pois estava-me confundindo na hora de de organizar todos os arquivos.
 
 **O modules_agenda.js segue o mesmo raciocinio**
 
@@ -265,7 +265,7 @@ Isso também faz com que o sistema não receba nenhuma requisição sem antes o 
 ## 🎮 Controladores (Controllers)
 Localização: ```src/controllers/```
 
-O Controller é o cérebro da rota, ele que recebe suas requisições e resposta nele encantramos a logica para:
+O Controller é o cérebro da rota, ele que recebe suas requisições e resposta, nele encontramos a logica para:
 
 * Validar: Verificar se o usuario enviou todos os dados necessarios.
 
@@ -444,7 +444,7 @@ insertPaciente = async (nome_paciente, cpf, endereco, cep, contato_responsavel, 
         return await this.db.run(sql, [nome_paciente, cpf, endereco, cep, contato_responsavel, observacao])
     }
 ```
-O model faz o insert no banco de daos e o Controller diz para  a rota retornar o ```Status(201)``` Elias de Souza, Paciente cadastrado com sucesso
+O model faz o insert no banco de dados e o Controller diz para  a rota retornar o ```Status(201)``` Elias de Souza, Paciente cadastrado com sucesso
 
 ---
 
@@ -1104,6 +1104,7 @@ Isso evita SQL maliciosos famoso(SQL Injection)
 
 * CRUD (Create, Read, Uldate e Delete)
 * Rotas com Express 
+* Arquitetura e Design de Software (MVC Model-View-Controller)
 * Injeção de Dependência (variavel contrutura => db => model => controller )
 * Camada de Módulos: (modules_paciente.js e modules_agenda.js)
 * Integridade Referencial: (Foreign Keys)
